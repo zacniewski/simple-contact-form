@@ -1,14 +1,22 @@
 import pytest
-from django.contrib.auth.models import User
+from model_bakery import baker
 
 from django.urls import reverse
+from pytest_drf import APIViewTest, UsesGetMethod, Returns200
+from pytest_lambda import lambda_fixture
 from rest_framework import status
-from rest_framework.test import APIClient, force_authenticate
+from rest_framework.test import APITestCase
 
 from contacts.models import Contact
-from contacts.serializers import ContactSerializer, FullContactSerializer
+from contacts.serializers import FullContactSerializer
 
-api_client = APIClient()
+contact_data = {
+    "name": "John",
+    "email": "johny@media.com",
+    "subject": "Other",
+    "message": "Testing contact",
+    "status": "New"
+}
 
 
 def test_with_no_authenticated_client(client, django_user_model):
@@ -51,7 +59,8 @@ def test_create_contact_2(admin_client):
         "email": "terry@media.com",
         "subject": "Other",
         "message": "Testing Terry",
-        "status": "Resolved"
+        "status": "Resolved",
+        "id": 100
     }
     response = admin_client.post(url, payload)
     print(response)
@@ -62,3 +71,54 @@ def test_create_contact_2(admin_client):
 def test_get_contacts(admin_client, create_contact):
     response = admin_client.get(reverse('contact_list'))
     assert response.status_code == status.HTTP_200_OK
+
+
+# test with pytest-drf
+class TestHelloWorld(
+    APIViewTest,
+    UsesGetMethod,
+    Returns200,
+):
+    url = lambda_fixture(lambda: reverse("home_page"))
+
+
+# test with APITestCase
+@pytest.mark.django_db
+class TestSecond(APITestCase):
+    def test_home_page(self):
+        get_data = self.client.get('/')
+        self.assertEqual(200, get_data.status_code)
+
+
+@pytest.mark.django_db
+def test_post_contact(admin_client):
+    # send a POST request to the CreateAPIView with the data for a new contact
+    response = admin_client.post('/contact', data=contact_data)
+    # assert that the response status code is correct
+    assert response.status_code == 301
+
+
+@pytest.mark.django_db
+def test_retrieve_contact(admin_client):
+    # send a request to the RetrieveUpdateDestroyAPIView for an individual contact
+    contact1 = baker.make(Contact)
+    serializer = FullContactSerializer(contact1)
+    response = admin_client.get(f'/contact/{contact1.id}/update')
+
+    # assert that the response status code is correct
+    assert response.status_code == 200
+    # assert that the returned data is correct
+    assert response.data["contact"].name == serializer.data["name"]
+
+
+@pytest.mark.django_db
+def test_destroy_contact(admin_client):
+    # send a DELETE request to the RetrieveUpdateDestroyAPIView for an individual person
+    contact2 = baker.make(Contact)
+    response = admin_client.delete(f'/contact/{contact2.id}/delete')
+    # assert that the response status code is correct
+    assert response.status_code == 302
+    # assert that the contact is not in the list of contacts
+    response2 = admin_client.get(reverse('contact_list'))
+    assert response2.status_code == 200
+    assert Contact.objects.filter(id=contact2.id).first() is None
