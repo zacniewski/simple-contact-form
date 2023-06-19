@@ -4,7 +4,6 @@ from model_bakery import baker
 from django.urls import reverse
 from pytest_drf import APIViewTest, UsesGetMethod, Returns200
 from pytest_lambda import lambda_fixture
-from rest_framework import status
 from rest_framework.test import APITestCase
 
 from contacts.models import Contact
@@ -19,16 +18,19 @@ contact_data = {
 }
 
 
+# testing 'home_page' view
 def test_with_no_authenticated_client(client, django_user_model):
     response = client.get('/')
     assert response.status_code == 200
 
 
+# testing 'contact_list' view
 def test_with_authenticated_client(admin_client, django_user_model):
     response = admin_client.get('/contact-list')
     assert response.status_code == 301
 
 
+# testing 'contact_list' view
 @pytest.mark.django_db
 def test_list_of_contacts(admin_client):
     url = reverse('contact_list')
@@ -38,6 +40,7 @@ def test_list_of_contacts(admin_client):
     assert response.data["contacts"] is not None
 
 
+# testing 'Contact' model
 @pytest.mark.django_db
 def test_create_contact_1():
     category = Contact.objects.create(
@@ -50,10 +53,10 @@ def test_create_contact_1():
     assert category.status == "New"
 
 
+# testing 'create_contact' view
 @pytest.mark.django_db
 def test_create_contact_2(admin_client):
     url = "/contact/"
-
     payload = {
         "name": "Terry Johns",
         "email": "terry@media.com",
@@ -63,17 +66,17 @@ def test_create_contact_2(admin_client):
         "id": 100
     }
     response = admin_client.post(url, payload)
-    print(response)
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == 200
 
 
+# testing 'contact_list' view
 @pytest.mark.django_db
 def test_get_contacts(admin_client, create_contact):
     response = admin_client.get(reverse('contact_list'))
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == 200
 
 
-# test with pytest-drf
+# testing 'home_page' view with pytest-drf
 class TestHelloWorld(
     APIViewTest,
     UsesGetMethod,
@@ -82,7 +85,7 @@ class TestHelloWorld(
     url = lambda_fixture(lambda: reverse("home_page"))
 
 
-# test with APITestCase
+# testing 'home_page' view with APITestCase
 @pytest.mark.django_db
 class TestSecond(APITestCase):
     def test_home_page(self):
@@ -90,6 +93,7 @@ class TestSecond(APITestCase):
         self.assertEqual(200, get_data.status_code)
 
 
+# testing 'create_contact' view
 @pytest.mark.django_db
 def test_post_contact(admin_client):
     # send a POST request to the CreateAPIView with the data for a new contact
@@ -98,6 +102,7 @@ def test_post_contact(admin_client):
     assert response.status_code == 301
 
 
+# testing 'contact_detail' view
 @pytest.mark.django_db
 def test_retrieve_contact(admin_client):
     # send a request to the RetrieveUpdateDestroyAPIView for an individual contact
@@ -111,6 +116,7 @@ def test_retrieve_contact(admin_client):
     assert response.data["contact"].name == serializer.data["name"]
 
 
+# testing 'contact_detail' view
 @pytest.mark.django_db
 def test_destroy_contact(admin_client):
     # send a DELETE request to the RetrieveUpdateDestroyAPIView for an individual person
