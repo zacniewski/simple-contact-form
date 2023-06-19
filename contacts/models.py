@@ -24,11 +24,14 @@ class Contact(models.Model):
         (RESOLVED, _('Resolved')),
     ]
 
-    name = models.CharField(null=False, max_length=50)
-    email = models.EmailField(max_length=255, validators=[EmailValidator])
-    subject = models.CharField(max_length=255, choices=SUBJECT)
-    message = models.TextField(null=False, max_length=500)
+    name = models.CharField(max_length=50, blank=False, null=False)
+    email = models.EmailField(max_length=255, validators=[EmailValidator], blank=False, null=False)
+    subject = models.CharField(max_length=255, choices=SUBJECT, blank=False, null=False)
+    message = models.TextField(max_length=500, blank=False, null=False)
     status = models.CharField(max_length=255, choices=STATUS)
+
+    class Meta:
+        ordering = ['id']
 
     def __str__(self):
         return f"{self.name}"
