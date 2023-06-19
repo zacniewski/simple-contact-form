@@ -4,7 +4,6 @@ from django.views.generic import TemplateView
 from django.urls import reverse_lazy
 
 from rest_framework import generics, permissions
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from rest_framework.response import Response
 
@@ -21,16 +20,12 @@ class ContactList(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAdminUser,)
     renderer_classes = [TemplateHTMLRenderer, JSONRenderer]
     template_name = "contact_list.html"
-    #serializer_class = FullContactSerializer
 
     def get(self, request):
         queryset = Contact.objects.all()
         paginate_queryset = self.paginator.paginate_queryset(queryset, request)
         serialize_pagination = FullContactSerializer(paginate_queryset, many=True).data
         data = self.paginator.get_paginated_response(serialize_pagination).data
-        print(data)
-        #return Response(data)
-
         return Response({'contacts': data})
 
     @property
