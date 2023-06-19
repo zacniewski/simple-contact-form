@@ -21,3 +21,6 @@ load-fixtures:
 
 docker-logs:
 	docker-compose logs -f
+
+test-contacts:
+	docker-compose run web pytest
