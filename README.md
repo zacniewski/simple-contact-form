@@ -16,6 +16,8 @@
 1. Tests were created with [pytest-django](https://pytest-django.readthedocs.io/en/latest/) and [pytest-drf](https://pypi.org/project/pytest-drf/).
 2. All test are placed in `tests` directory.
 3. To run the tests: `make test-contacts`.
+4. To run `coverage`: `make run-coverage` and then `make coverage-html` to generate HTML report.
+5. At this moment coverage result is 89%.
 
 ### Structure of the project
 ```bash

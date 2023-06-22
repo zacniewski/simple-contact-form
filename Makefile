@@ -24,3 +24,9 @@ docker-logs:
 
 test-contacts:
 	docker-compose run web pytest
+
+run-coverage:
+	docker-compose run web coverage run -m pytest
+
+coverage-html:
+	docker-compose run web coverage html
