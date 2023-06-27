@@ -4,13 +4,18 @@
 1. Docker.
 
 ### Running the project
-1. `Makefile` was created to help user with running the project.
-2. To initialize the project: `make docker-up`.
-3. To create the superuser: `make create-superuser` (login: `admin`, password: `admin123`).
-4. To create the non-admin user: `make create-user` (login: `testuser`, password: `test1234`).
-5. To check functionalities you should log in with aforementioned credentials.
-6. Fixtures `contacts.json` (40 contacts) were created. To apply them:  `make load-fixtures`
-7. To run project in the browser, go to the [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
+1. Clone the repo: 
+    ```bash
+    git clone https://github.com/zacniewski/simple-contact-form.git 
+    cd simple-contact-form
+    ```
+2. `Makefile` was created to help user with running the project.
+3. To initialize the project: `make docker-up`.
+4. To create the superuser: `make create-superuser` (login: `admin`, password: `admin123`).
+5. To create the non-admin user: `make create-user` (login: `testuser`, password: `test1234`).
+6. To check functionalities you should log in with aforementioned credentials.
+7. Fixtures `contacts.json` (40 contacts) were created. To apply them:  `make load-fixtures`
+8. To run project in the browser, go to the [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
 
 ### Tests
 1. Tests were created with [pytest-django](https://pytest-django.readthedocs.io/en/latest/) and [pytest-drf](https://pypi.org/project/pytest-drf/).
