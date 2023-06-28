@@ -11,11 +11,16 @@
     ```
 2. `Makefile` was created to help user with running the project.
 3. To initialize the project: `make docker-up`.
-4. To create the superuser: `make create-superuser` (login: `admin`, password: `admin123`).
-5. To create the non-admin user: `make create-user` (login: `testuser`, password: `test1234`).
-6. To check functionalities you should log in with aforementioned credentials.
-7. Fixtures `contacts.json` (40 contacts) were created. To apply them:  `make load-fixtures`
-8. To run project in the browser, go to the [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
+4. To aplly the migrations: 
+    ```bash
+    make make-migrations 
+    make migrate
+    ```
+5. To create the superuser: `make create-superuser` (login: `admin`, password: `admin123`).
+6. To create the non-admin user: `make create-user` (login: `testuser`, password: `test1234`).
+7. To check functionalities you should log in with aforementioned credentials.
+8. Fixtures `contacts.json` (40 contacts) were created. To apply them:  `make load-fixtures`
+9. To run project in the browser, go to the [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
 
 ### Tests
 1. Tests were created with [pytest-django](https://pytest-django.readthedocs.io/en/latest/) and [pytest-drf](https://pypi.org/project/pytest-drf/).
